@@ -104,7 +104,7 @@ if (props.bodyRotationSpeed > 0) {
 
       <!-- Atmosphere -->
       <template v-if="atmosphere">
-        <Atmosphere/>
+        <Atmosphere v-bind="atmosphere"/>
       </template>
 
       <!-- Rings -->

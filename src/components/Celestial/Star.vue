@@ -84,7 +84,7 @@ useRenderLoop().onLoop(({ delta }) => {
   RotationY.value = RotationY.value > 360 ? 0 : (RotationY.value + (delta / 10));
   // coronaShader.uniforms.u_Time.value += 0.01 * coronaShader.uniforms.u_WobbleSpeed.value
 })
-const color = '#fffcf4'
+
 </script>
 
 <template>
@@ -107,7 +107,7 @@ const color = '#fffcf4'
     <Atmosphere :scale="1.0075" :rim-hex="0xffff99" :facing-hex="0x000000"
                 :fresnel-bias="0.2" :fresnel-scale="2" :fresnel-power="5" />
 
-    <!-- Glow -->
+    <!-- Atmosphere -->
     <Atmosphere :scale="1.15" :rim-hex="0x000000" :facing-hex="0xff0000"
                 :fresnel-bias="0.45" :fresnel-scale="2.25" :fresnel-power="4" />
 

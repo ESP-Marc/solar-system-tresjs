@@ -14,7 +14,7 @@ import {
   IcosahedronGeometry,
 } from "three";
 
-export class Planet {
+export class PlanetOld {
   group;
   loader;
   animate;

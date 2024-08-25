@@ -14,7 +14,7 @@ import {
 } from "three";
 import { ImprovedNoise } from "three/addons/math/ImprovedNoise.js";
 
-export class Sun {
+export class SunOld {
   group;
   loader;
   animate;

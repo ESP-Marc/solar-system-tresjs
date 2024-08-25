@@ -12,11 +12,11 @@ const props = withDefaults(defineProps<IAtmosphere>(), {
   scale: 1.1,
 
   rimHex: 0x000000,
-  facingHex: 0xff0000,
+  facingHex: 0x000000,
 
-  fresnelBias: 0.91,
-  fresnelScale: 0.1,
-  fresnelPower: 0.5,
+  fresnelBias: 0.95,
+  fresnelScale: 0.05,
+  fresnelPower: 4.0,
 
 })
 

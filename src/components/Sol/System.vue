@@ -29,6 +29,7 @@ const entities: TCelestialEntities[] = [
     bodyRadiusReal: 696000, // km (kilometers radius)
     bodyRotationSpeed: 1997,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
+
   },
   {
     name: 'Mercury',
@@ -45,7 +46,9 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 10.83, // km/h
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
-    rimHex: 0xf9cf9f,
+    atmosphere: {
+      facingHex: 0xf9cf9f,
+    }
   },
   {
     name: 'Venus',
@@ -62,7 +65,9 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 6.52, // km/h
     bodyRotationDirection: ECelestialRotation.CLOCKWISE,
 
-    rimHex: 0xb66f1f,
+    atmosphere: {
+      facingHex: 0xb66f1f,
+    }
   },
   {
     name: 'Earth',
@@ -79,6 +84,14 @@ const entities: TCelestialEntities[] = [
     bodyAngle: (-23.4 * Math.PI) / 180,
     bodyRotationSpeed: 1574,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
+
+    atmosphere: {
+      facingHex: 0x8CD1ED,
+      fresnelBias: 0.95,
+      fresnelScale: 0.05,
+      fresnelPower: 4,
+    }
+
   },
   {
     name: 'Mars',
@@ -95,7 +108,9 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 866,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
-    rimHex: 0xbc6434,
+    atmosphere: {
+      facingHex: 0xbc6434,
+    }
   },
   {
     name: 'Jupiter',
@@ -112,7 +127,12 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 45583,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
-    rimHex: 0xf3d6b6,
+    atmosphere: {
+      rimHex: 0xf3d6b6,
+      fresnelBias: 0.01,
+      fresnelScale: 0.1,
+      fresnelPower: 2,
+    }
   },
   {
     name: 'Saturn',
@@ -129,7 +149,9 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 36840,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
-    rimHex: 0xd6b892,
+    // atmosphere: {
+    //   facingHex: 0xd6b892,
+    // },
 
     rings: {
       size: 2,
@@ -152,7 +174,9 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 14794,
     bodyRotationDirection: ECelestialRotation.CLOCKWISE,
 
-    rimHex: 0x9ab6c2,
+    atmosphere: {
+      facingHex: 0x9ab6c2,
+    },
 
     rings: {
       size: 2,
@@ -175,7 +199,9 @@ const entities: TCelestialEntities[] = [
     bodyRotationSpeed: 9719,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
-    rimHex: 0x5c7ed7,
+    atmosphere: {
+      facingHex: 0x5c7ed7,
+    }
 
   },
 ].map((item: TCelestialEntities) => {
@@ -202,13 +228,6 @@ useRenderLoop().onLoop(({ delta }) => {
 <template>
 
   <TresGroup>
-
-    <TresLine>
-      <TresBufferGeometry>
-        <TresPath :absarc="[0, 0, 5, 0, (Math.PI * 2)]" :get-spaced-points="50"/>
-      </TresBufferGeometry>
-      <TresLineBasicMaterial :color="0xFFFFFF"/>
-    </TresLine>
 
     <Sky :turbidity="1000" :rayleigh="97" :mieCoefficient="0.00015" :mieDirectionalG="1" :distance="10000" :elevation="0.01"/>
 
