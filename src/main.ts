@@ -4,6 +4,6 @@ import App from './App.vue'
 
 const app = createApp(App)
 
-setTimeout(() => {
+//setTimeout(() => {
     app.mount('#app')
-}, 8000)
+//}, 7000)

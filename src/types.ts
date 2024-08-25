@@ -1,28 +1,61 @@
+// ENUMS
 import { ECelestialRotation } from '@/enums.ts'
 
+// TYPES
+import type { Component } from 'vue'
 
-export type TCelestialPlanetRings = {
+export type IAtmosphere = {
 
-    size: number
-    texture: string
+  scale?: number
+
+  rimHex?: number
+  facingHex?: number
+
+  fresnelBias?: number
+  fresnelScale?: number
+  fresnelPower?: number
+
+}
+
+export type IRings = {
+
+  size: number
+  texture: string
 
 }
 
-export type TCelestialPlanet = {
+export type ICelestialEntity = {
 
-    orbitSpeed: number
-    orbitRadius: number
-    orbitRotationDirection: ECelestialRotation
+  name: string
+  texture: string
+  component: Component
 
-    planetSize: number
-    planetAngle?: number
-    planetRotationSpeed: number
-    planetRotationDirection: ECelestialRotation
-    planetTexture: string
+  bodyRadius: number
+  bodyRadiusReal: number
+  bodyAngle?: number
+  bodyRotationSpeed: number
+  bodyRotationDirection?: ECelestialRotation,
 
-    rimHex?: number
-    facingHex?: number
-
-    rings?: TCelestialPlanetRings
+  atmosphere?: IAtmosphere
 
 }
+
+export type IStar = IAtmosphere & ICelestialEntity & {
+
+
+}
+
+export type IPlanet = IAtmosphere & ICelestialEntity & {
+
+  index?: number,
+
+  orbitSpeed: number
+  orbitDistance: number
+  orbitDistanceReal: number
+  orbitRotationDirection: ECelestialRotation
+
+  rings?: IRings
+
+}
+
+export type TCelestialEntities = ICelestialEntity | IStar | IPlanet
