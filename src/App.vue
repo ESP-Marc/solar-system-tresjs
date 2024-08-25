@@ -25,7 +25,6 @@ import SolSystem from './components/Sol/System.vue'
         <MapControls />
         <TresPerspectiveCamera :position="[0, 500, 0]" :look-at="[0,0,0]" :fov="75" :near="1" :far="10000"/>
         <SolSystem/>
-        <SolSystem/>
 
       </TresCanvas>
 
