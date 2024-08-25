@@ -1,183 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solar System</title>
-    <meta name="description" content="Solar system made using by Three.js" />
-    <style>
-      body {
-        margin: 0;
-      }
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solar System - TresJS</title>
+  <meta name="description" content="Solar system made using TresJS"/>
+  <style>
+    :root {
+      font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
 
-      canvas {
-        position: fixed;
-        z-index: 5;
-        inset: 0;
-      }
+      color-scheme: light dark;
+      color: rgba(255, 255, 255, 0.87);
+      background-color: #0d0b0e;
 
-      /* styles for loader fallback */
-      @keyframes zoom {
-        0% {
-          transform: scale(1);
-        }
-        100% {
-          transform: scale(1.5);
-        }
-      }
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-      .loader-container {
-        z-index: 100;
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-        position: relative;
-        background-color: black;
-      }
+    html, body, #app {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-      .stars {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        height: 1px;
-        width: 1px;
-        background-color: #fff;
-        border-radius: 50%;
-        box-shadow: 24vw 9vh 1px 0px #fff, 12vw -24vh 0px 1px #fff,
-          -45vw -22vh 0px 0px #fff, -37vw -40vh 0px 1px #fff,
-          29vw 19vh 0px 1px #fff, 4vw -8vh 0px 1px #fff, -5vw 21vh 1px 1px #fff,
-          -27vw 26vh 1px 1px #fff, -47vw -3vh 1px 1px #fff,
-          -28vw -30vh 0px 1px #fff, -43vw -27vh 0px 1px #fff,
-          4vw 22vh 1px 1px #fff, 36vw 23vh 0px 0px #fff, -21vw 24vh 1px 1px #fff,
-          -16vw 2vh 1px 0px #fff, -16vw -6vh 0px 0px #fff, 5vw 26vh 0px 0px #fff,
-          -34vw 41vh 0px 0px #fff, 1vw 42vh 1px 1px #fff,
-          11vw -13vh 1px 1px #fff, 48vw -8vh 1px 0px #fff,
-          22vw -15vh 0px 0px #fff, 45vw 49vh 0px 0px #fff,
-          43vw -27vh 1px 1px #fff, 20vw -2vh 0px 0px #fff, 8vw 22vh 0px 1px #fff,
-          39vw 48vh 1px 1px #fff, -21vw -11vh 0px 1px #fff,
-          -40vw 45vh 0px 1px #fff, 11vw -30vh 1px 0px #fff,
-          26vw 30vh 1px 0px #fff, 45vw -29vh 0px 1px #fff,
-          -2vw 18vh 0px 0px #fff, -29vw -45vh 1px 0px #fff,
-          -7vw -27vh 1px 1px #fff, 42vw 24vh 0px 0px #fff,
-          45vw -48vh 1px 0px #fff, -36vw -18vh 0px 0px #fff,
-          -44vw 13vh 0px 1px #fff, 36vw 16vh 0px 1px #fff,
-          40vw 24vh 0px 0px #fff, 18vw 11vh 0px 0px #fff,
-          -15vw -23vh 1px 0px #fff, -24vw 48vh 0px 1px #fff,
-          27vw -45vh 1px 0px #fff, -2vw -24vh 0px 1px #fff,
-          -15vw -28vh 0px 0px #fff, -43vw 13vh 1px 0px #fff,
-          7vw 27vh 1px 0px #fff, 47vw 5vh 0px 0px #fff, -45vw 15vh 1px 1px #fff,
-          -5vw -28vh 0px 1px #fff, 38vw 25vh 1px 1px #fff,
-          -39vw -1vh 1px 0px #fff, 5vw 0vh 1px 0px #fff, 49vw 13vh 0px 0px #fff,
-          48vw 10vh 0px 1px #fff, 19vw -28vh 0px 0px #fff, 4vw 7vh 0px 0px #fff,
-          21vw 21vh 1px 1px #fff, -15vw -15vh 0px 1px #fff,
-          -6vw -42vh 1px 0px #fff, -15vw 48vh 1px 1px #fff,
-          -23vw 25vh 1px 1px #fff, -48vw 25vh 0px 1px #fff,
-          -31vw -19vh 0px 1px #fff, 4vw 37vh 1px 1px #fff,
-          -43vw 28vh 0px 0px #fff, 3vw -25vh 0px 1px #fff,
-          -39vw 14vh 0px 1px #fff, -40vw 31vh 0px 1px #fff,
-          35vw -36vh 1px 1px #fff, 16vw 49vh 0px 0px #fff, 6vw 39vh 0px 0px #fff,
-          3vw -35vh 0px 1px #fff, -44vw -2vh 1px 0px #fff,
-          -6vw 21vh 1px 0px #fff, 48vw 9vh 1px 1px #fff, -43vw 30vh 1px 1px #fff,
-          29vw -12vh 1px 1px #fff, -48vw 13vh 1px 0px #fff,
-          -42vw 32vh 1px 1px #fff, 34vw 15vh 1px 1px #fff,
-          29vw -37vh 1px 1px #fff, 28vw 2vh 0px 0px #fff;
-        animation: zoom 16s alternate infinite;
+    @keyframes zoom {
+      0% {
+        transform: scale(1);
       }
-
-      .loader-hidden {
-        opacity: 0;
-        pointer-events: none;
-        transition: all 1000ms ease-in-out;
+      100% {
+        transform: scale(1.5);
       }
+    }
 
-      @keyframes hexagon-intro-anim {
-        0% {
-          stroke-dasharray: 600;
-          stroke-dashoffset: 600;
-        }
-        99% {
-          stroke-dasharray: 570;
-          stroke-dashoffset: 0;
-        }
-        100% {
-          stroke-dasharray: 600;
-          stroke-dashoffset: 0;
-        }
-      }
-
-      .logo {
-        position: absolute;
-        z-index: 10;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
-
-      .hexagon {
-        stroke-linecap: round;
+    @keyframes hexagon-intro-anim {
+      0% {
         stroke-dasharray: 600;
-        animation: hexagon-intro-anim 1000ms ease-in-out forwards;
+        stroke-dashoffset: 600;
       }
-
-      @keyframes letter-intro-anim {
-        0% {
-          opacity: 0;
-          animation: scale(0.5) translate(95, 50) rotate(180 5.85 45.5);
-        }
-        100% {
-          opacity: 1;
-          animation: scale(1) translate(95, 50) rotate(180 5.85 45.5);
-        }
+      29% {
+        stroke-dasharray: 570;
+        stroke-dashoffset: 0;
       }
-
-      .letter {
+      30% {
+        stroke-dasharray: 600;
+        stroke-dashoffset: 0;
+      }
+      97% {
+        opacity: 1;
+      }
+      100% {
         opacity: 0;
-        transform: scale(0.5) translate(95, 50) rotate(180 5.85 45.5);
-        animation: letter-intro-anim 1000ms ease-in-out forwards;
-        animation-delay: 1000ms;
       }
-    </style>
-  </head>
-  <body>
-    <div id="loader" class="loader-container">
-      <div class="stars"></div>
-      <svg
-        id="logo"
-        role="img"
-        width="64"
-        height="64"
-        class="logo"
-        version="1.1"
-        aria-hidden="true"
-        viewBox="-5 -5 210 210"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-      >
-        <polygon
-          class="hexagon"
-          stroke-width="10"
-          fill="rgb(0, 0, 0)"
-          stroke="rgb(255, 232, 31)"
-          points="52,16.8615612366939 148,16.8615612366939 196,100 148,183.138438763306 52,183.138438763306 4,100"
-        ></polygon>
-        <path
-          id="letter-m"
-          class="letter"
-          transform="translate(58, 55)"
-          fill="rgb(255, 232, 31)"
-          stroke="rgb(255, 232, 31)"
-          d="M 11.7 91 L 0 91 L 0 0 L 17.29 0 L 42.51 57.59 L 67.34 0 L 85.02 0 L 85.02 91 L 72.67 91 L 72.67 15.73 L 48.36 70.46 L 36.14 70.46 L 11.7 15.73 L 11.7 91 Z"
-        ></path>
-      </svg>
-    </div>
-    <script>
-      window.addEventListener("load", () => {
-        const loader = document.getElementById("loader");
-        setTimeout(() => loader.classList.add("loader-hidden"), 3000);
-        setTimeout(() => loader.remove(), 4000);
-      });
-    </script>
-    <script defer type="module" src="/src/index.js"></script>
-  </body>
+    }
+
+    @keyframes letter-intro-anim {
+      0% {
+        opacity: 0;
+        animation: scale(0.5) translate(95, 50) rotate(180 5.85 45.5);
+      }
+      50% {
+        opacity: 1;
+        animation: scale(1) translate(95, 50) rotate(180 5.85 45.5);
+      }
+      95% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    #app[v-cloak] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #app[v-cloak] .stars {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 1px;
+      width: 1px;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 24vw 9vh 1px 0px #fff, 12vw -24vh 0px 1px #fff,
+      -45vw -22vh 0px 0px #d7c5ff, -37vw -40vh 0px 1px #a6b9ea,
+      29vw 19vh 0px 1px #ddb39c, 4vw -8vh 0px 1px #fbfacb, -5vw 21vh 1px 1px #dca3a3,
+      -27vw 26vh 1px 1px #fff, -47vw -3vh 1px 1px #fff,
+      -28vw -30vh 0px 1px #fff, -43vw -27vh 0px 1px #fff,
+      4vw 22vh 1px 1px #99e0ec, 36vw 23vh 0px 0px #cfebfa, -21vw 24vh 1px 1px #99b2e1,
+      -16vw 2vh 1px 0px #f8b6b6, -16vw -6vh 0px 0px #dd7e7e, 5vw 26vh 0px 0px #fb4949,
+      -34vw 41vh 0px 0px #fff, 1vw 42vh 1px 1px #fff,
+      11vw -13vh 1px 1px rgba(191, 228, 220, 0.56), 48vw -8vh 1px 0px #7ef1dd,
+      22vw -15vh 0px 0px #fff, 45vw 49vh 0px 0px #fff,
+      43vw -27vh 1px 1px #fdea92, 20vw -2vh 0px 0px #fae6cf, 8vw 22vh 0px 1px #f4b266,
+      39vw 48vh 1px 1px #fff, -21vw -11vh 0px 1px #fff,
+      -40vw 45vh 0px 1px #e2a7f4, 11vw -30vh 1px 0px #9d68dd,
+      26vw 30vh 1px 0px #e8e1db, 45vw -29vh 0px 1px #f8adad,
+      -2vw 18vh 0px 0px #fff, -29vw -45vh 1px 0px #fff,
+      -7vw -27vh 1px 1px #96d8e4, 42vw 24vh 0px 0px #4572b6,
+      45vw -48vh 1px 0px #d6c2ba, -36vw -18vh 0px 0px #fff,
+      -44vw 13vh 0px 1px #9874d5, 36vw 16vh 0px 1px #9abbf4,
+      40vw 24vh 0px 0px #fff, 18vw 11vh 0px 0px #fff,
+      -15vw -23vh 1px 0px #e8b48b, -24vw 48vh 0px 1px #cc7878,
+      27vw -45vh 1px 0px #fff, -2vw -24vh 0px 1px #fff,
+      -15vw -28vh 0px 0px #ba96d8, -43vw 13vh 1px 0px #d984f3,
+      7vw 27vh 1px 0px #fff, 47vw 5vh 0px 0px #fff, -45vw 15vh 1px 1px #fff,
+      -5vw -28vh 0px 1px #afd6df, 38vw 25vh 1px 1px #835ecd,
+      -39vw -1vh 1px 0px #b9cce4, 5vw 0vh 1px 0px #b2d8dd, 49vw 13vh 0px 0px #6e89d8,
+      48vw 10vh 0px 1px #fff, 19vw -28vh 0px 0px #fff, 4vw 7vh 0px 0px #fff,
+      21vw 21vh 1px 1px #b1f1f1, -15vw -15vh 0px 1px #9bc3e3,
+      -6vw -42vh 1px 0px #b4c8cc, -15vw 48vh 1px 1px #fff,
+      -23vw 25vh 1px 1px #edd2a0, -48vw 25vh 0px 1px #dfa473,
+      -31vw -19vh 0px 1px #fff, 4vw 37vh 1px 1px #b0cbd6,
+      -43vw 28vh 0px 0px #dfe8e7, 3vw -25vh 0px 1px #808faf,
+      -39vw 14vh 0px 1px #fff, -40vw 31vh 0px 1px #fff,
+      35vw -36vh 1px 1px #a7a5e6, 16vw 49vh 0px 0px #e2ecef, 6vw 39vh 0px 0px #e89d9d,
+      3vw -35vh 0px 1px #9bc0dd, -44vw -2vh 1px 0px #e872e6,
+      -6vw 21vh 1px 0px #88c6e1, 48vw 9vh 1px 1px #428abd, -43vw 30vh 1px 1px #fff,
+      29vw -12vh 1px 1px #fff, -48vw 13vh 1px 0px #fff,
+      -42vw 32vh 1px 1px #c4e6dd, 34vw 15vh 1px 1px #9ac4fb,
+      29vw -37vh 1px 1px #ac58dd, 28vw 2vh 0px 0px #cdaeea;
+      animation: zoom 16s alternate infinite;
+    }
+
+    #app[v-cloak] .hexagon {
+      stroke-linecap: round;
+      stroke-dasharray: 600;
+      animation: hexagon-intro-anim 8000ms ease-in-out forwards;
+    }
+
+    #app[v-cloak] .letter {
+      opacity: 0;
+      transform: scale(0.5) translate(95, 50) rotate(180 5.85 45.5);
+      animation: letter-intro-anim 6000ms ease-in-out forwards;
+      animation-delay: 2000ms;
+    }
+
+  </style>
+</head>
+<body>
+<div v-cloak id="app">
+  <svg id="logo" role="img" class="logo"
+       width="256" height="256" aria-hidden="true" viewBox="-5 -5 210 210"
+       xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  >
+    <polygon class="hexagon"
+             stroke-width="5" fill="rgb(5, 5, 10)"
+             stroke="rgb(80, 180, 96)"
+             points="52,16.8615612366939 148,16.8615612366939 196,100 148,183.138438763306 52,183.138438763306 4,100"
+    ></polygon>
+    <path
+        id="letter-m" class="letter"
+        transform="translate(58, 55)" fill="rgb(80, 180, 96)"
+        stroke="rgb(80, 180, 96)"
+        stroke-width="2"
+        d="M 11.7 91 L 0 91 L 0 0 L 17.29 0 L 42.51 57.59 L 67.34 0 L 85.02 0 L 85.02 91 L 72.67 91 L 72.67 15.73 L 48.36 70.46 L 36.14 70.46 L 11.7 15.73 L 11.7 91 Z"
+    ></path>
+  </svg>
+  <div class="stars"></div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>
