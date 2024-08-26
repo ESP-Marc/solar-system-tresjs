@@ -42,12 +42,12 @@ const clouds = await useTexture({
 
   <Body v-bind="$props">
 
-    <TresMesh>
+    <TresMesh :scale="1.001" :rotate-z="bodyAngle">
       <TresSphereGeometry :radius="$props.bodyRadius"/>
       <TresMeshBasicMaterial v-bind="lighting" :blending="AdditiveBlending"/>
     </TresMesh>
 
-    <TresMesh :scale="1.003">
+    <TresMesh :scale="1.01">
       <TresSphereGeometry :radius="$props.bodyRadius"/>
       <TresMeshStandardMaterial v-bind="clouds" :opacity="0.8" :blending="AdditiveBlending" transparent/>
     </TresMesh>

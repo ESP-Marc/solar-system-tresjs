@@ -6,7 +6,7 @@
  */
 
 import { TresCanvas } from '@tresjs/core'
-import { MapControls, OrbitControls } from '@tresjs/cientos'
+import { MapControls } from '@tresjs/cientos'
 import { ACESFilmicToneMapping, LinearSRGBColorSpace } from 'three'
 
 // Systems
@@ -22,9 +22,12 @@ import SolSystem from './components/Sol/System.vue'
 
       <TresCanvas :tone-mapping="ACESFilmicToneMapping" :output-color-space="LinearSRGBColorSpace" antialias window-size>
 
-        <MapControls />
+        <MapControls/>
         <TresPerspectiveCamera :position="[0, 500, 0]" :look-at="[0,0,0]" :fov="75" :near="1" :far="10000"/>
-        <SolSystem/>
+
+        <Suspense suspensible>
+          <SolSystem/>
+        </Suspense>
 
       </TresCanvas>
 

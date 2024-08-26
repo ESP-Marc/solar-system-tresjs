@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
-import { Stars, Sky } from '@tresjs/cientos'
-import { useRenderLoop } from '@tresjs/core'
 import { shallowRef } from 'vue'
+import { useRenderLoop } from '@tresjs/core'
+import { Stars, Sky } from '@tresjs/cientos'
+import { preloadFont } from 'troika-three-text'
+
 
 // Components
 import Star from '@/components/Celestial/Star.vue'
@@ -15,7 +17,27 @@ import { ECelestialRotation } from '@/enums.ts'
 // TYPES
 import { TCelestialEntities } from '@/types.ts'
 
-let accumilateDistance = 0
+function loadFont() {
+
+  return new Promise((resolve, reject) => {
+    try {
+      preloadFont({
+        font: '/assets/fonts/Roboto-Light.ttf',
+        characters: 'abcdefghijklmnopqrstuvwxyz1234567890.-/',
+        sdfGlyphSize: 64,
+      }, () => {
+        resolve(true)
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+
+}
+
+await loadFont()
+
+let accumulateDistance = 0
 
 // Star system composition
 // 1 AU (Astronomical Units) = 215.032 R☉ (Solar Radii)
@@ -48,7 +70,7 @@ const entities: TCelestialEntities[] = [
 
     atmosphere: {
       facingHex: 0xf9cf9f,
-    }
+    },
   },
   {
     name: 'Venus',
@@ -67,7 +89,7 @@ const entities: TCelestialEntities[] = [
 
     atmosphere: {
       facingHex: 0xb66f1f,
-    }
+    },
   },
   {
     name: 'Earth',
@@ -90,7 +112,7 @@ const entities: TCelestialEntities[] = [
       fresnelBias: 0.95,
       fresnelScale: 0.05,
       fresnelPower: 4,
-    }
+    },
 
   },
   {
@@ -110,7 +132,7 @@ const entities: TCelestialEntities[] = [
 
     atmosphere: {
       facingHex: 0xbc6434,
-    }
+    },
   },
   {
     name: 'Jupiter',
@@ -132,7 +154,7 @@ const entities: TCelestialEntities[] = [
       fresnelBias: 0.01,
       fresnelScale: 0.1,
       fresnelPower: 2,
-    }
+    },
   },
   {
     name: 'Saturn',
@@ -201,16 +223,20 @@ const entities: TCelestialEntities[] = [
 
     atmosphere: {
       facingHex: 0x5c7ed7,
-    }
+    },
 
   },
-].map((item: TCelestialEntities) => {
+].map((item) => {
 
+  // Scale down real size for illustrative scene
   item.bodyRadius = (item.bodyRadiusReal / 5000)
-  acumilateDistance += ((item.bodyRadius) + ((item.rings?.size ?? 0) * 10) + 20)
 
+  // Space entities based on their size with spacing
+  accumulateDistance += ((item.bodyRadius) + ((item.rings?.size ?? 0) * 10) + 20)
+
+  // Set orbital distance if this is an orbital entity
   if ('orbitDistance' in item) {
-    item.orbitDistance = (acumilateDistance + 1)
+    item.orbitDistance = (accumulateDistance + 1)
   }
 
   return item

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-import { shallowRef } from 'vue'
+import { onMounted, ShallowRef, shallowRef } from 'vue'
 import { useRenderLoop, useTexture } from '@tresjs/core'
-import { BufferGeometry, DoubleSide, Path, SRGBColorSpace } from 'three'
+import { BufferGeometry, DoubleSide, Group, Path, SRGBColorSpace } from 'three'
 import { Ring } from '@tresjs/cientos'
+import { Text as TroikaText } from 'troika-three-text'
 
 // Components
 import Atmosphere from '@/components/Celestial/Atmosphere.vue'
@@ -14,7 +15,7 @@ import { ECelestialRotation } from '@/enums.ts'
 // TYPES
 import type { IPlanet } from '@/types.ts'
 
-
+// Definitions
 const props = withDefaults(defineProps<IPlanet>(), {
 
   index: 0,
@@ -38,6 +39,10 @@ const props = withDefaults(defineProps<IPlanet>(), {
 
 })
 
+// References
+const groupOrbit = shallowRef() as ShallowRef<Group>
+
+// Variables
 const isClockwise = props.orbitRotationDirection === ECelestialRotation.CLOCKWISE
 const rotationSpeed = (isClockwise ? -1 : 1) * Math.abs(props.bodyRotationSpeed / ((365 * 6000)))
 const scale = props.bodyRadius
@@ -55,30 +60,48 @@ const ringsTexture = await (props.rings ? useTexture({
   map: props.rings.texture,
 }) : null)
 
-// Render Loops
-
-if (props.orbitSpeed > 0) {
-
-  useRenderLoop().onLoop(() => {
-    OrbitY.value += (isClockwise ? -1 : 1) * (props.orbitSpeed)
-  })
-
-}
-
-if (props.bodyRotationSpeed > 0) {
-
-  useRenderLoop().onLoop(() => {
-    PlanetRotationY.value = PlanetRotationY.value > 360 ? 0 : (rotationSpeed + PlanetRotationY.value)
-  })
-
-}
-
 // const orbitColor = props.atmosphere?.rimHex ?? props.atmosphere?.facingHex ?? 0x56616A
 const orbitColor = 0x56616A
 
 const orbitalGeometry = new BufferGeometry().setFromPoints(
     new Path().absarc(0, 0, props.orbitDistance, 0, (Math.PI * 2)).getSpacedPoints(75),
 )
+
+// Events
+
+onMounted(() => {
+
+  const label: any = new TroikaText()
+  label.text = props.name
+  label.font = '/assets/fonts/Roboto-Light.ttf'
+  label.color = 0xFFFFFF
+  label.fontSize = 1
+  label.textAlign = 'center'
+  label.anchorX = 'center'
+  label.gpuAccelerateSDF = true
+  label.maxWidth = 10
+  label.position.set(distance, (props.bodyRadius + 5), 0)
+
+  groupOrbit.value.add(label)
+
+  // Render Loops
+  if (props.orbitSpeed > 0) {
+
+    useRenderLoop().onLoop(() => {
+      OrbitY.value += (isClockwise ? -1 : 1) * (props.orbitSpeed)
+    })
+
+  }
+
+  if (props.bodyRotationSpeed > 0) {
+
+    useRenderLoop().onLoop(() => {
+      PlanetRotationY.value = PlanetRotationY.value > 360 ? 0 : (rotationSpeed + PlanetRotationY.value)
+    })
+
+  }
+
+})
 
 </script>
 
@@ -93,13 +116,13 @@ const orbitalGeometry = new BufferGeometry().setFromPoints(
       </TresLine>
     </template>
 
-    <TresGroup :rotation="[0, OrbitY, 0]">
+    <TresGroup ref="groupOrbit" :rotation="[0, OrbitY, 0]">
 
-      <!-- Planet -->
-      <TresGroup :scale="scale" :rotation="[0, PlanetRotationY, bodyAngle]" :position="[distance, 0, 0]">
+      <!-- Entity -->
+      <TresGroup :scale="scale" :rotation="[0, PlanetRotationY, 0]" :position="[distance, 0, 0]">
 
         <!-- Body -->
-        <TresMesh>
+        <TresMesh :rotate-z="bodyAngle">
           <TresSphereGeometry/>
           <TresMeshPhongMaterial v-bind="texture" :color-space="SRGBColorSpace"/>
         </TresMesh>
