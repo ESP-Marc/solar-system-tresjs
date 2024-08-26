@@ -74,8 +74,6 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="TypeScript">
-      <option name="SPACE_BEFORE_COLON" value="false" />
-      <option name="SPACE_AFTER_COLON" value="false" />
       <option name="ENUM_CONSTANTS_WRAP" value="0" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />

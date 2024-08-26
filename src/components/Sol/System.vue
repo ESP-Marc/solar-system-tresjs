@@ -207,10 +207,10 @@ const entities: TCelestialEntities[] = [
 ].map((item: TCelestialEntities) => {
 
   item.bodyRadius = (item.bodyRadiusReal / 5000)
-  accumilateDistance += ((item.bodyRadius) + ((item.rings?.size ?? 0) * 10) + 20)
+  acumilateDistance += ((item.bodyRadius) + ((item.rings?.size ?? 0) * 10) + 20)
 
-  if('orbitDistance' in item) {
-    item.orbitDistance = (accumilateDistance + 1)
+  if ('orbitDistance' in item) {
+    item.orbitDistance = (acumilateDistance + 1)
   }
 
   return item

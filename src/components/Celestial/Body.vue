@@ -2,7 +2,7 @@
 
 import { shallowRef } from 'vue'
 import { useRenderLoop, useTexture } from '@tresjs/core'
-import { DoubleSide, SRGBColorSpace } from 'three'
+import { BufferGeometry, DoubleSide, Path, SRGBColorSpace } from 'three'
 import { Ring } from '@tresjs/cientos'
 
 // Components
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<IPlanet>(), {
 })
 
 const isClockwise = props.orbitRotationDirection === ECelestialRotation.CLOCKWISE
-const rotationSpeed = (isClockwise ? -1:1) * Math.abs(props.bodyRotationSpeed / ((365 * 6000)))
+const rotationSpeed = (isClockwise ? -1 : 1) * Math.abs(props.bodyRotationSpeed / ((365 * 6000)))
 const scale = props.bodyRadius
 const distance = props.orbitDistance
 
@@ -53,14 +53,14 @@ const texture = await useTexture({
 
 const ringsTexture = await (props.rings ? useTexture({
   map: props.rings.texture,
-}):null)
+}) : null)
 
 // Render Loops
 
 if (props.orbitSpeed > 0) {
 
   useRenderLoop().onLoop(() => {
-    OrbitY.value += (isClockwise ? -1:1) * (props.orbitSpeed)
+    OrbitY.value += (isClockwise ? -1 : 1) * (props.orbitSpeed)
   })
 
 }
@@ -73,50 +73,54 @@ if (props.bodyRotationSpeed > 0) {
 
 }
 
+// const orbitColor = props.atmosphere?.rimHex ?? props.atmosphere?.facingHex ?? 0x56616A
+const orbitColor = 0x56616A
+
+const orbitalGeometry = new BufferGeometry().setFromPoints(
+    new Path().absarc(0, 0, props.orbitDistance, 0, (Math.PI * 2)).getSpacedPoints(75),
+)
+
 </script>
 
 <template>
 
-  <TresGroup :rotation="[0, OrbitY, 0]">
+  <TresGroup>
 
     <!-- Orbit Line -->
     <template v-if="distance">
-      <TresLine>
-        <TresBufferGeometry>
-          <TresPath :absarc="[0, 0, 5, 0, (Math.PI * 2)]" :get-spaced-points="50"/>
-        </TresBufferGeometry>
-        <TresLineBasicMaterial :color="0xADD8E6"/>
+      <TresLine :geometry="orbitalGeometry" :rotation="[(Math.PI / 2),0,0]">
+        <TresLineBasicMaterial :color="orbitColor"/>
       </TresLine>
-      <!--    <TresMesh :rotation="[(Math.PI / 2), 0, 0]">-->
-      <!--      <TresRingGeometry :radius="orbit" :tube="0.01" :segments="1"/>-->
-      <!--      <TresMeshBasicMaterial :color="0xADD8E6" :side="DoubleSide"/>-->
-      <!--    </TresMesh>-->
     </template>
 
-    <!-- Planet -->
-    <TresGroup :scale="scale" :rotation="[0, PlanetRotationY, bodyAngle]" :position="[distance, 0, 0]">
+    <TresGroup :rotation="[0, OrbitY, 0]">
 
-      <!-- Body -->
-      <TresMesh>
-        <TresSphereGeometry/>
-        <TresMeshPhongMaterial v-bind="texture" :color-space="SRGBColorSpace"/>
-      </TresMesh>
+      <!-- Planet -->
+      <TresGroup :scale="scale" :rotation="[0, PlanetRotationY, bodyAngle]" :position="[distance, 0, 0]">
 
-      <!-- Atmosphere -->
-      <template v-if="atmosphere">
-        <Atmosphere v-bind="atmosphere"/>
-      </template>
+        <!-- Body -->
+        <TresMesh>
+          <TresSphereGeometry/>
+          <TresMeshPhongMaterial v-bind="texture" :color-space="SRGBColorSpace"/>
+        </TresMesh>
 
-      <!-- Rings -->
-      <template v-if="rings">
+        <!-- Atmosphere -->
+        <template v-if="atmosphere">
+          <Atmosphere v-bind="atmosphere"/>
+        </template>
 
-        <Ring :args="[0, rings.size, 32]" :rotation="[(Math.PI / 2), 0, 0]">
-          <TresMeshBasicMaterial v-bind="ringsTexture" :side="DoubleSide" transparent/>
-        </Ring>
+        <!-- Rings -->
+        <template v-if="rings">
 
-      </template>
+          <Ring :args="[0, rings.size, 32]" :rotation="[(Math.PI / 2), 0, 0]">
+            <TresMeshBasicMaterial v-bind="ringsTexture" :side="DoubleSide" transparent/>
+          </Ring>
 
-      <slot/>
+        </template>
+
+        <slot/>
+
+      </TresGroup>
 
     </TresGroup>
 
