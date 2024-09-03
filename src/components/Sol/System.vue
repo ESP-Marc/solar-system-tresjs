@@ -41,6 +41,7 @@ let accumulateDistance = 0
 
 // Star system composition
 // 1 AU (Astronomical Units) = 215.032 R☉ (Solar Radii)
+// 1 R☉ (Solar Radii) = 695700 km (kilometers)
 const entities: TCelestialEntities[] = [
   {
     name: 'Sun',
@@ -48,10 +49,9 @@ const entities: TCelestialEntities[] = [
     component: Star,
 
     bodyRadius: 0,
-    bodyRadiusReal: 696000, // km (kilometers radius)
+    bodyRadiusReal: 1.00043122, // R☉ (Solar Radii)
     bodyRotationSpeed: 1997,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
-
   },
   {
     name: 'Mercury',
@@ -64,7 +64,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 2440, // km (kilometers radius)
+    bodyRadiusReal: 0.003507259, // R☉ (Solar Radii)
     bodyRotationSpeed: 10.83, // km/h
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
@@ -83,7 +83,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 6052, // km (kilometers radius)
+    bodyRadiusReal: 0.008699152, // R☉ (Solar Radii)
     bodyRotationSpeed: 6.52, // km/h
     bodyRotationDirection: ECelestialRotation.CLOCKWISE,
 
@@ -102,7 +102,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 6371,
+    bodyRadiusReal: 0.009157683,
     bodyAngle: (-23.4 * Math.PI) / 180,
     bodyRotationSpeed: 1574,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
@@ -126,7 +126,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 3390,
+    bodyRadiusReal: 0.00487279,
     bodyRotationSpeed: 866,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
@@ -145,7 +145,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 69911,
+    bodyRadiusReal: 0.10049015,
     bodyRotationSpeed: 45583,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
@@ -167,7 +167,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 58232,
+    bodyRadiusReal: 0.083702745,
     bodyRotationSpeed: 36840,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
@@ -192,7 +192,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 25362,
+    bodyRadiusReal: 0.036455369,
     bodyRotationSpeed: 14794,
     bodyRotationDirection: ECelestialRotation.CLOCKWISE,
 
@@ -217,7 +217,7 @@ const entities: TCelestialEntities[] = [
     orbitRotationDirection: ECelestialRotation.CLOCKWISE,
 
     bodyRadius: 0,
-    bodyRadiusReal: 24622,
+    bodyRadiusReal: 0.035391692,
     bodyRotationSpeed: 9719,
     bodyRotationDirection: ECelestialRotation.COUNTERCLOCKWISE,
 
@@ -226,22 +226,27 @@ const entities: TCelestialEntities[] = [
     },
 
   },
-].map((item) => {
+]
+    .map((item, index) => {
 
-  // Scale down real size for illustrative scene
-  item.bodyRadius = (item.bodyRadiusReal / 5000)
+      item.bodyRadius = (item.bodyRadiusReal * 100)
 
-  // Space entities based on their size with spacing
-  accumulateDistance += ((item.bodyRadius) + ((item.rings?.size ?? 0) * 10) + 20)
+      if ('orbitDistance' in item) {
 
-  // Set orbital distance if this is an orbital entity
-  if ('orbitDistance' in item) {
-    item.orbitDistance = (accumulateDistance + 1)
-  }
+        const mass = item.bodyRadius * 4
+        accumulateDistance += (mass + (mass * (item.rings?.size ?? 0))) + index
+        item.orbitDistance = accumulateDistance
 
-  return item
+        return item
 
-})
+      }
+
+      // Initial distance from star
+      accumulateDistance += item.bodyRadius + 100
+
+      return item
+
+    })
 
 const yStars = shallowRef(0)
 
@@ -257,7 +262,7 @@ useRenderLoop().onLoop(({ delta }) => {
 
     <Sky :turbidity="1000" :rayleigh="97" :mieCoefficient="0.00015" :mieDirectionalG="1" :distance="10000" :elevation="0.01"/>
 
-    <Stars :rotation="[0, yStars, 0]"
+    <Stars :rotation="[0, yStars, 0]" :position="[0, 0, 0]"
            :size="0.15" :radius="1000" :depth="1"
            :count="5000" :size-attenuation="false"/>
 

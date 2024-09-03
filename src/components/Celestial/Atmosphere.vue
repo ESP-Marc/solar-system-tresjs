@@ -1,15 +1,15 @@
 <script setup lang="ts">
 
+import { computed } from 'vue'
 import { AdditiveBlending, Color } from 'three'
 
 // TYPES
 import type { IAtmosphere } from '@/types.ts'
-import { computed } from 'vue'
 
 
 const props = withDefaults(defineProps<IAtmosphere>(), {
 
-  scale: 1.1,
+  scale: 1.01,
 
   rimHex: 0x000000,
   facingHex: 0x000000,
@@ -73,7 +73,7 @@ const shader = computed(() => ({
 <template>
 
   <TresMesh :scale="scale">
-    <TresSphereGeometry/>
+    <TresSphereGeometry :args="[scale, 50, 50]" />
     <TresShaderMaterial v-bind="shader"/>
   </TresMesh>
 

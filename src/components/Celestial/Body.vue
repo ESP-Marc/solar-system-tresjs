@@ -40,6 +40,7 @@ const props = withDefaults(defineProps<IPlanet>(), {
 })
 
 // References
+const body = shallowRef()
 const groupOrbit = shallowRef() as ShallowRef<Group>
 
 // Variables
@@ -64,7 +65,7 @@ const ringsTexture = await (props.rings ? useTexture({
 const orbitColor = 0x56616A
 
 const orbitalGeometry = new BufferGeometry().setFromPoints(
-    new Path().absarc(0, 0, props.orbitDistance, 0, (Math.PI * 2)).getSpacedPoints(75),
+    new Path().absarc(0, 0, distance, 0, (Math.PI * 2)).getSpacedPoints(75),
 )
 
 // Events
@@ -80,7 +81,7 @@ onMounted(() => {
   label.anchorX = 'center'
   label.gpuAccelerateSDF = true
   label.maxWidth = 10
-  label.position.set(distance, (props.bodyRadius + 5), 0)
+  label.position.set(distance, (scale + 5), 0)
 
   groupOrbit.value.add(label)
 
@@ -88,7 +89,7 @@ onMounted(() => {
   if (props.orbitSpeed > 0) {
 
     useRenderLoop().onLoop(() => {
-      OrbitY.value += (isClockwise ? -1 : 1) * (props.orbitSpeed)
+     OrbitY.value += (isClockwise ? -1 : 1) * (props.orbitSpeed)
     })
 
   }
@@ -119,7 +120,7 @@ onMounted(() => {
     <TresGroup ref="groupOrbit" :rotation="[0, OrbitY, 0]">
 
       <!-- Entity -->
-      <TresGroup :scale="scale" :rotation="[0, PlanetRotationY, 0]" :position="[distance, 0, 0]">
+      <TresGroup ref="body" :scale="scale" :rotation="[0, PlanetRotationY, 0]" :position="[distance, 0, 0]">
 
         <!-- Body -->
         <TresMesh :rotate-z="bodyAngle">
